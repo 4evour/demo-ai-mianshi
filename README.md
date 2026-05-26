@@ -1,12 +1,12 @@
  
 <p align="center">
-  Design an interview in plain language. Share a link. Aural's AI conducts the conversation —<br/>
+  Design an interview in plain language. Share a link. Deep OS 's AI conducts the conversation —<br/>
   asking questions, probing with follow-ups, and generating detailed analysis when the session ends.
 </p>
 
 <p align="center">
   <b>
-    <a href="https://aural-ai.com">Try Cloud &rarr;</a>
+    <a href="https://ai-inter.dpqq.com">Try Cloud &rarr;</a>
   </b>
   &nbsp;&nbsp;&nbsp;
   <b>
