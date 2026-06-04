@@ -1,3 +1,13 @@
+
+[中文](https://github.com/yuanzhongqiao/ai-interview-platform/blob/main/readme-cn.md)
+
+Open-source AI interview platform for voice, chat, and video — automate screening and scale your hiring workflow
+
+
+# AI interview platform
+
+
+
 <p align="center">
   <img src="./public/brand-logo.svg" alt="聆悟 Lingwu" width="120" />
 </p>
