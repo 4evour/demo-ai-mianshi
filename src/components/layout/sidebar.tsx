@@ -21,7 +21,6 @@ import { createClient } from "@/lib/supabase/client";
 import { cn } from "@/lib/utils";
 import {
     ArrowUpRight,
-    BrainCircuit,
     ChevronUp,
     FolderKanban,
     Gauge,
@@ -31,7 +30,6 @@ import {
     Loader2,
     LogOut,
     MessageSquare,
-    MessageCircle,
     Monitor,
     Moon,
     Palette,
@@ -163,10 +161,8 @@ export function Sidebar({
   const projectNavigation = [
     { name: t("sidebar.dashboard"), href: "/dashboard", icon: LayoutDashboard },
     { name: t("sidebar.interviews"), href: "/interviews", icon: MessageSquare },
-    { name: t("header.practices"), href: "/practices", icon: BrainCircuit },
     { name: t("sidebar.sessions"), href: "/candidates", icon: PlayCircle },
     { name: t("sidebar.questions"), href: "/questions", icon: HelpCircle },
-    { name: t("sidebar.aiChat"), href: "/ai-chat", icon: MessageCircle },
     { name: t("sidebar.about"), href: "/about", icon: Info },
   ];
 
