@@ -102,6 +102,7 @@ export function RegisterForm() {
             <Input
               id="email"
               type="email"
+              autoComplete="email"
               placeholder={t("auth.emailPlaceholder")}
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -113,6 +114,7 @@ export function RegisterForm() {
             <Input
               id="password"
               type="password"
+              autoComplete="new-password"
               placeholder={t("auth.passwordHint")}
               value={password}
               onChange={(e) => setPassword(e.target.value)}

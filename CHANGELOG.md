@@ -22,6 +22,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed voice relay startup, Docker service wiring, voice relay build arguments, and voice-only default tests from the MVP runtime path.
 - Hid multi-organization switching and organization/member management entry points from the MVP navigation while retaining existing data and permission services.
 - Removed practice mode and standalone AI chat from the MVP default navigation while retaining their routes for later phases.
+- Removed the duplicate public favicon that conflicted with the App Router favicon and caused `/favicon.ico` to return HTTP 500 in local development.
+- Added standard autocomplete attributes to login and registration fields for cleaner browser validation.
 
 ## [0.2.0] - 2026-05-24
 
