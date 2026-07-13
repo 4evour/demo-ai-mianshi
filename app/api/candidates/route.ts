@@ -1,4 +1,5 @@
 import { readStore } from "@/lib/store";
+import { buildCandidateReviewView } from "@/lib/reviewer-data";
 import { NextResponse } from "next/server";
 
 export async function GET(request: Request) {
@@ -6,15 +7,7 @@ export async function GET(request: Request) {
   const store = await readStore();
   const candidates = store.candidates
     .filter((candidate) => !jobId || candidate.jobId === jobId)
-    .map((candidate) => ({
-      ...candidate,
-      resume: {
-        ...candidate.resume,
-        sourceText: undefined,
-        redactedText: undefined,
-      },
-      session: store.sessions.find((session) => session.id === candidate.interviewId) ?? null,
-      report: store.reports.find((report) => report.candidateId === candidate.id) ?? null,
-    }));
+    .map((candidate) => buildCandidateReviewView(store, candidate.id))
+    .filter((candidate) => candidate !== null);
   return NextResponse.json({ candidates });
 }

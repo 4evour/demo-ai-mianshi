@@ -17,6 +17,8 @@ test("report prompt labels every answer with its turn id", () => {
   assert.match(content, /\[TURN:turn-1\]/);
   assert.match(content, /你负责什么？/);
   assert.match(content, /我负责检索模块/);
+  assert.match(content, /dimensions 必须是 JSON 数组/);
+  assert.match(content, /evidenceConfidence/);
 });
 
 test("removes evidence references that do not exist in the session", () => {

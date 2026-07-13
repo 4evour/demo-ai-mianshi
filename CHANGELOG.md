@@ -58,3 +58,16 @@
 
 ### 影响范围
 - Documentation only; runtime code and application behavior are unchanged.
+## 2026-07-13 23:16 - Add multi-page reviewer workspace
+
+### 变更内容
+- `app/`、`components/`、`lib/reviewer-data.ts`、`lib/comparison-selection.ts`：将审核员单页工作台拆分为岗位列表、岗位详情、候选人档案、问答记录、报告和同岗位双人对比页面，并新增对应只读 API 与选择约束。
+- `app/globals.css`：增加多页面列表、折叠问答、报告和对比布局样式，并限制岗位详情内容区的最小宽度，避免移动端被候选人表格撑出横向滚动。
+- `tests/`：增加审核员读模型、双人对比选择和报告结构兼容测试。
+- `README.md`、`docs/mvp-design.md`、`docs/mvp-implementation-plan.md`：同步多页面审阅流程、API 和验证数量。
+
+### 原因
+- 单页同时展示岗位、候选人、长问答和报告时信息密度过高，无法高效切换和比较多个岗位及候选人。
+
+### 影响范围
+- 审核员岗位与候选人审阅界面、报告对比、相关只读 API、样式、测试和项目文档；候选人答题流程及现有本地 JSON 数据不迁移、不清空。

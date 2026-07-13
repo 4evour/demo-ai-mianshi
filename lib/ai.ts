@@ -108,7 +108,7 @@ export function buildReportMessages(job: Job, candidate: Candidate, session: Ses
   return [
     {
       role: "system",
-      content: "你是招聘报告分析助手。只输出 JSON。评分等级为 0 到 4，0 表示没有有效证据，4 表示能深入分析边界、失败模式和改进。每条 evidence 必须以 [TURN:实际ID] 或 [RESUME] 开头；不得编造 ID。没有证据时 level 为 0、confidence 为 0，并加入 pendingChecks。禁止根据姓名、邮箱、手机号、学校、性别或年龄推断能力。",
+      content: "你是招聘报告分析助手。只输出 JSON，字段为 summary、dimensions、strengths、gaps、followUps、pendingChecks。dimensions 必须是 JSON 数组，每项必须包含 name、level、evidenceConfidence、reason、evidence；不得把 dimensions 输出成以维度名为键的对象。评分等级 level 为 0 到 4，evidenceConfidence 为 0 到 1；0 表示没有有效证据，4 表示能深入分析边界、失败模式和改进。每条 evidence 必须以 [TURN:实际ID] 或 [RESUME] 开头；不得编造 ID。没有证据时 level 为 0、evidenceConfidence 为 0，并加入 pendingChecks。禁止根据姓名、邮箱、手机号、学校、性别或年龄推断能力。",
     },
     {
       role: "user",

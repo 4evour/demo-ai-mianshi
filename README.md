@@ -7,7 +7,7 @@
 ## 项目用途
 
 - 验证“简历解析 + AI 追问 + 证据化报告”的招聘初筛产品链路。
-- 帮审核员把岗位要求、简历项目、候选人回答和 AI 建议放在同一个工作台里审阅。
+- 帮审核员按岗位和候选人拆分审阅简历、问答与 AI 报告，并横向比较同岗位候选人。
 - 用本地 PaddleOCR 处理扫描件 PDF，避免扫描简历直接解析失败。
 - 在调用 DeepSeek 前脱敏姓名、邮箱、手机号和学校，减少隐私信息外发。
 - 通过受控状态机限制动态追问，避免模型无限追问、越权改状态或阻塞候选人提交。
@@ -65,7 +65,7 @@
 
 ```text
 app/                  Next.js 页面和 API 路由
-components/           审核员工作台、候选人答题页等 UI 组件
+components/           岗位、候选人、问答、报告与候选人答题页 UI 组件
 lib/                  AI 调用、状态机、简历解析、评分、存储和 Schema
 ocr-service/          本地 PaddleOCR 服务
 tests/                Node 测试
@@ -130,6 +130,8 @@ OCR_MIN_CONFIDENCE=0.65
 
 - `POST /api/jobs`：创建岗位并结构化 JD。
 - `GET /api/jobs`：读取岗位列表。
+- `GET /api/jobs/:jobId`：读取岗位详情及候选人流程摘要。
+- `GET /api/candidates/:candidateId`：读取候选人档案、会话和报告审阅数据。
 - `POST /api/resumes/parse`：上传 PDF 简历，执行文本提取、OCR 分流、脱敏和结构化解析。
 - `POST /api/resumes/correct`：确认人工修正后的 OCR 文本并继续解析。
 - `POST /api/questions/generate`：为候选人生成个性化问题。

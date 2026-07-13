@@ -51,15 +51,35 @@ export const followUpAiSchema = z.discriminatedUnion("action", [
   }),
 ]);
 
+const reportDimensionSchema = z.object({
+  name: z.string(),
+  level: z.number().min(0).max(4),
+  evidenceConfidence: z.number().min(0).max(1),
+  reason: z.string(),
+  evidence: z.array(z.string()).default([]),
+});
+
+function normalizeReportDimension(value: unknown, fallbackName?: string): unknown {
+  if (!value || typeof value !== "object" || Array.isArray(value)) return value;
+  const dimension = value as Record<string, unknown>;
+  return {
+    ...dimension,
+    name: dimension.name ?? fallbackName,
+    evidenceConfidence: dimension.evidenceConfidence ?? dimension.confidence,
+  };
+}
+
+const reportDimensionsSchema = z.preprocess((value) => {
+  if (Array.isArray(value)) return value.map((dimension) => normalizeReportDimension(dimension));
+  if (value && typeof value === "object") {
+    return Object.entries(value).map(([name, dimension]) => normalizeReportDimension(dimension, name));
+  }
+  return value;
+}, z.array(reportDimensionSchema));
+
 export const reportAiSchema = z.object({
   summary: z.string(),
-  dimensions: z.array(z.object({
-    name: z.string(),
-    level: z.number().min(0).max(4),
-    evidenceConfidence: z.number().min(0).max(1),
-    reason: z.string(),
-    evidence: z.array(z.string()).default([]),
-  })),
+  dimensions: reportDimensionsSchema,
   strengths: z.array(z.string()).default([]),
   gaps: z.array(z.string()).default([]),
   followUps: z.array(z.string()).default([]),
