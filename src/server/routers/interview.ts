@@ -1,5 +1,6 @@
 import { nanoid } from "@/lib/id";
 import { INTERVIEW_TEMPLATES } from "@/lib/interview-templates";
+import { normalizeMvpInterviewCapabilities } from "@/lib/mvp-capabilities";
 import { getSessionOverallScore } from "@/lib/session-score";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
@@ -419,6 +420,7 @@ export const interviewRouter = router({
         .from("interviews")
         .insert({
           ...rest,
+          ...normalizeMvpInterviewCapabilities(rest),
           projectId,
           userId: ctx.user.id,
           requireInvite: true,
@@ -502,9 +504,7 @@ export const interviewRouter = router({
           aiTone: template.aiTone,
           followUpDepth: template.followUpDepth,
           assessmentCriteria: template.assessmentCriteria,
-          chatEnabled: template.chatEnabled,
-          voiceEnabled: template.voiceEnabled,
-          videoEnabled: template.videoEnabled,
+          ...normalizeMvpInterviewCapabilities(template),
           timeLimitMinutes: template.timeLimitMinutes ?? null,
           projectId,
           userId: ctx.user.id,
@@ -590,7 +590,10 @@ export const interviewRouter = router({
       const { id, ...data } = input;
       const { data: interview, error } = await ctx.supabase
         .from("interviews")
-        .update(data)
+        .update({
+          ...data,
+          ...normalizeMvpInterviewCapabilities(data),
+        })
         .eq("id", id)
         .select("*")
         .single();

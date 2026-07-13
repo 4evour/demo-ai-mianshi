@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - ADR-001 documenting the decision to extend the upstream interview platform instead of rebuilding the Web application from scratch.
 - Original take-home assignment under `docs/requirements/` for requirement traceability.
 
+### Changed
+
+- Added a single MVP capability policy that forces chat-only interviews and disables voice, video, and anti-cheating fields at the server boundary.
+- Added regression coverage for MVP capability normalization.
+
 ## [0.2.0] - 2026-05-24
 
 ### Added

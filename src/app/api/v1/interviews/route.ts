@@ -3,6 +3,7 @@ import {
   isAuthError,
   validateApiKey,
 } from "@/lib/api-key-auth";
+import { normalizeMvpInterviewCapabilities } from "@/lib/mvp-capabilities";
 import { nanoid } from "@/lib/id";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
@@ -115,15 +116,10 @@ export async function POST(request: Request) {
 
   const projectId = auth.projectIds[0]!;
 
-  const chatEnabled = typeof body.chatEnabled === "boolean" ? body.chatEnabled : true;
-  const voiceEnabled = typeof body.voiceEnabled === "boolean" ? body.voiceEnabled : false;
-  const videoEnabled = typeof body.videoEnabled === "boolean" ? body.videoEnabled : false;
   const aiName = typeof body.aiName === "string" && body.aiName.trim() ? body.aiName.trim() : "聆悟";
   const aiTone = body.aiTone === "CASUAL" || body.aiTone === "PROFESSIONAL" || body.aiTone === "FORMAL" || body.aiTone === "FRIENDLY" ? body.aiTone : "PROFESSIONAL";
   const followUpDepth = body.followUpDepth === "LIGHT" || body.followUpDepth === "MODERATE" || body.followUpDepth === "DEEP" ? body.followUpDepth : "MODERATE";
   const language = typeof body.language === "string" && body.language.trim() ? body.language.trim() : "en";
-  const antiCheatingEnabled = typeof body.antiCheatingEnabled === "boolean" ? body.antiCheatingEnabled : false;
-
   let timeLimitMinutes: number | null = null;
   if (body.timeLimitMinutes !== undefined && body.timeLimitMinutes !== null) {
     if (typeof body.timeLimitMinutes !== "number" || !Number.isInteger(body.timeLimitMinutes) || body.timeLimitMinutes < 1) {
@@ -137,15 +133,17 @@ export async function POST(request: Request) {
     description: typeof body.description === "string" ? body.description : undefined,
     objective: typeof body.objective === "string" ? body.objective : undefined,
     assessmentCriteria: assessmentCriteria ?? undefined,
-    chatEnabled,
-    voiceEnabled,
-    videoEnabled,
+    ...normalizeMvpInterviewCapabilities({
+      chatEnabled: typeof body.chatEnabled === "boolean" ? body.chatEnabled : undefined,
+      voiceEnabled: typeof body.voiceEnabled === "boolean" ? body.voiceEnabled : undefined,
+      videoEnabled: typeof body.videoEnabled === "boolean" ? body.videoEnabled : undefined,
+      antiCheatingEnabled: typeof body.antiCheatingEnabled === "boolean" ? body.antiCheatingEnabled : undefined,
+    }),
     aiName,
     aiTone,
     followUpDepth,
     language,
     timeLimitMinutes,
-    antiCheatingEnabled,
     projectId,
     userId: auth.userId,
     requireInvite: true,

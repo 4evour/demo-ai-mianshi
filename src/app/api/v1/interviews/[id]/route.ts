@@ -3,6 +3,7 @@ import {
   isAuthError,
   validateApiKey,
 } from "@/lib/api-key-auth";
+import { normalizeMvpInterviewCapabilities } from "@/lib/mvp-capabilities";
 import { supabaseAdmin } from "@/lib/supabase/admin";
 
 export async function GET(
@@ -187,6 +188,8 @@ export async function PATCH(
   if (Object.keys(patch).length === 0) {
     return apiError("BAD_REQUEST", "No valid fields to update.", 400);
   }
+
+  Object.assign(patch, normalizeMvpInterviewCapabilities(patch));
 
   const { data: updated, error } = await supabaseAdmin
     .from("interviews")
