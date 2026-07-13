@@ -1,3 +1,17 @@
+## 2026-07-13 23:11 - Clarify README project ownership
+
+### 变更内容
+- `README.md`: Removed wording that compared the MVP with an "original demo-ai-mianshi repository" and clarified that this repository itself is the standalone MVP.
+- `CHANGELOG.md`: Recorded the README wording correction and outer workspace cleanup.
+- `D:\make`: Removed unrelated outer planning documents and the outer `docs` directory; `D:\make\demo-ai-mianshi` remained because Windows reported it was in use.
+
+### 原因
+- The previous README wording could incorrectly imply that this project was derived from or dependent on another repository.
+- The outer `D:\make` directory contained files unrelated to the MVP repository.
+
+### 影响范围
+- Documentation and outer workspace cleanup only; MVP runtime code and application behavior are unchanged.
+
 ## 2026-07-13 22:56 - Expand project README
 
 ### 变更内容
