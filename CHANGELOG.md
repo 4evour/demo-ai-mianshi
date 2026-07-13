@@ -1,3 +1,15 @@
+## 2026-07-13 22:56 - Expand project README
+
+### 变更内容
+- `README.md`: Rewrote the project overview with detailed purpose, roles, end-to-end workflow, AI safety boundaries, architecture, startup steps, API summary, report evidence rules, and current limitations.
+- `CHANGELOG.md`: Recorded the README documentation update.
+
+### 原因
+- The repository README needed to explain what the MVP is for and how the screening workflow operates for reviewers, candidates, and future maintainers.
+
+### 影响范围
+- Documentation only; runtime code and application behavior are unchanged.
+
 ## 2026-07-13 22:08 - Prepare MVP repository upload
 
 ### 变更内容
