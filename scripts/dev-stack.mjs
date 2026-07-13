@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * Start Next.js + voice relay (OpenAI relay optional if Azure is configured).
+ * Start the MVP Next.js text interview application.
  */
 import { spawn } from "node:child_process";
 import { fileURLToPath } from "node:url";
@@ -24,19 +24,7 @@ function run(name, command, args) {
   return child;
 }
 
-const children = [run("voice-relay", "npx", ["tsx", "server/voice-relay.ts"])];
-
-if (process.env.AZURE_OPENAI_ENDPOINT && process.env.AZURE_OPENAI_API_KEY) {
-  children.push(
-    run("openai-voice-relay", "npx", ["tsx", "server/openai-voice-relay.ts"]),
-  );
-} else {
-  console.log(
-    "[dev-stack] Skipping openai-voice-relay (set AZURE_OPENAI_* to enable)",
-  );
-}
-
-children.push(run("next", "pnpm", ["run", "dev"]));
+const children = [run("next", "pnpm", ["run", "dev"])];
 
 function shutdown() {
   for (const child of children) {
@@ -48,8 +36,4 @@ function shutdown() {
 process.on("SIGINT", shutdown);
 process.on("SIGTERM", shutdown);
 
-console.log("[dev-stack] Next.js + voice relay starting…");
-console.log("[dev-stack] Voice relay: ws://localhost:8766/ws/voice");
-if (process.env.AZURE_OPENAI_ENDPOINT) {
-  console.log("[dev-stack] OpenAI relay: ws://localhost:8767/ws/openai-voice");
-}
+console.log("[dev-stack] Next.js text interview MVP starting…");
