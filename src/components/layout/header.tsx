@@ -2,7 +2,7 @@
 
 import { useAppLocale } from "@/components/app-locale-provider";
 import { trpc } from "@/lib/trpc/client";
-import { ChevronDown, Compass, Plus, Settings } from "lucide-react";
+import { ChevronDown, Compass, Settings } from "lucide-react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
@@ -16,7 +16,6 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
@@ -33,59 +32,14 @@ function InterviewBreadcrumbLabel({ id }: { id: string }) {
 }
 
 function OrgSwitcher() {
-  const { orgs, currentOrg, setCurrentOrg } = useOrg();
-  const router = useRouter();
-  const { t } = useAppLocale();
+  const { currentOrg } = useOrg();
 
   if (!currentOrg) return null;
 
-  const handleSwitch = (orgId: string) => {
-    if (orgId !== currentOrg.id) {
-      setCurrentOrg(orgId);
-      router.refresh();
-    }
-  };
-
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className="flex items-center gap-1 rounded-md px-1.5 py-1 text-sm transition-colors hover:bg-muted outline-none">
-          <span className="truncate max-w-[160px]">{currentOrg.name}</span>
-          <ChevronDown className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-        </button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-56">
-        <div className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-          {t("header.orgList")}
-        </div>
-        {orgs.map((org) => (
-          <DropdownMenuItem
-            key={org.id}
-            onClick={() => handleSwitch(org.id)}
-            className="flex items-center justify-between"
-          >
-            <span className="truncate">{org.name}</span>
-            <Link
-              href="/org/settings"
-              onClick={(e) => {
-                e.stopPropagation();
-                setCurrentOrg(org.id);
-              }}
-              className="rounded-md p-1 -mr-1 text-muted-foreground hover:text-foreground hover:bg-accent"
-            >
-              <Settings className="h-4 w-4 shrink-0" />
-            </Link>
-          </DropdownMenuItem>
-        ))}
-        <DropdownMenuSeparator />
-        <DropdownMenuItem asChild>
-          <Link href="/org/new" className="flex items-center gap-2">
-            <Plus className="h-4 w-4" />
-            {t("header.newOrganization")}
-          </Link>
-        </DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+    <span className="truncate max-w-[160px] px-1.5 py-1 text-sm">
+      {currentOrg.name}
+    </span>
   );
 }
 
@@ -139,13 +93,6 @@ function ProjectSwitcher() {
               </Link>
             </DropdownMenuItem>
           ))}
-          <DropdownMenuSeparator />
-          <DropdownMenuItem asChild>
-            <Link href="/organizations" className="flex items-center gap-2">
-              <Plus className="h-4 w-4" />
-              {t("header.newProject")}
-            </Link>
-          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
     </>

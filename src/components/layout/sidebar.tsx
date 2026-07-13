@@ -207,7 +207,7 @@ export function Sidebar({
     >
       {/* Logo */}
       <div className="flex h-14 items-center border-b border-sidebar-border px-4">
-        <Link href="/organizations" className="flex items-center gap-1">
+        <Link href="/dashboard" className="flex items-center gap-1">
           <BrandMark size={28} showName={!collapsed} />
         </Link>
       </div>

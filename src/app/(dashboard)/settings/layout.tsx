@@ -4,7 +4,7 @@ import { useAppLocale } from "@/components/app-locale-provider";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ArrowUpRight, Building2, KeyRound, Settings, Users } from "lucide-react";
+import { KeyRound, Settings } from "lucide-react";
 
 export default function SettingsLayout({
   children,
@@ -19,7 +19,6 @@ export default function SettingsLayout({
     href: string;
     icon: typeof Settings;
     exact?: boolean;
-    external?: boolean;
   }[] = [
     {
       name: isZh ? "通用" : "General",
@@ -28,20 +27,9 @@ export default function SettingsLayout({
       exact: true,
     },
     {
-      name: isZh ? "成员" : "Members",
-      href: "/settings/members",
-      icon: Users,
-    },
-    {
       name: isZh ? "API 密钥" : "API Keys",
       href: "/settings/api-keys",
       icon: KeyRound,
-    },
-    {
-      name: isZh ? "组织" : "Organizations",
-      href: "/organizations",
-      icon: Building2,
-      external: true,
     },
   ];
 
@@ -58,18 +46,13 @@ export default function SettingsLayout({
               href={item.href}
               className={cn(
                 "flex items-center gap-2 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-                item.external
-                  ? "text-muted-foreground hover:bg-muted hover:text-foreground"
-                  : isActive
-                    ? "bg-primary/10 text-primary"
-                    : "text-muted-foreground hover:bg-muted hover:text-foreground",
+                isActive
+                  ? "bg-primary/10 text-primary"
+                  : "text-muted-foreground hover:bg-muted hover:text-foreground",
               )}
             >
               <item.icon className="h-4 w-4 shrink-0" />
               <span className="flex-1">{item.name}</span>
-              {item.external && (
-                <ArrowUpRight className="h-3.5 w-3.5 shrink-0 text-muted-foreground" />
-              )}
             </Link>
           );
         })}
