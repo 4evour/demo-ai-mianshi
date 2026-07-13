@@ -119,7 +119,7 @@ export const appLocaleJa: Record<string, string> = {
   "auth.createAccountSubtitle": "AI 面接の構築を始めましょう",
   "auth.demoEmail": "demo@lingwu.local",
   "auth.demoHintTitle": "デモ認証情報（ローカル Supabase）",
-  "auth.demoNote": "先に登録するか、scripts/init_sample_data.sql でシードを実行してください",
+  "auth.demoNote": "管理者から提供されたアカウントでログインしてください",
   "auth.demoPassword": "Demo123456",
   "auth.didntReceiveCode": "コードが届きませんか？",
   "auth.email": "メール",

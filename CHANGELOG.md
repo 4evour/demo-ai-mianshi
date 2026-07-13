@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Removed practice mode and standalone AI chat from the MVP default navigation while retaining their routes for later phases.
 - Removed the duplicate public favicon that conflicted with the App Router favicon and caused `/favicon.ico` to return HTTP 500 in local development.
 - Added standard autocomplete attributes to login and registration fields for cleaner browser validation.
+- Disabled self-service registration for the MVP: registration links now point to login, `/register` redirects to `/login`, and onboarding copy references administrator-provided accounts.
 
 ## [0.2.0] - 2026-05-24
 

@@ -61,7 +61,7 @@ export function AboutContent() {
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Button asChild size="lg">
-              <Link href="/register">{t("about.getStarted")}</Link>
+              <Link href="/login">{t("about.getStarted")}</Link>
             </Button>
             <Button asChild variant="outline" size="lg">
               <a

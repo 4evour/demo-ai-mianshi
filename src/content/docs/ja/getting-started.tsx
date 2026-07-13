@@ -56,12 +56,10 @@ export function whatIsLingwuContentJa() {
 export function accountAndDashboardContentJa() {
   return (
     <>
-      <h2>アカウント登録</h2>
+      <h2>ログイン</h2>
       <p>
-        <DocLink href="/register">/register</DocLink> にアクセスし、氏名、メール、パスワードを入力して登録します。
+        <DocLink href="/login">/login</DocLink> にアクセスし、管理者から提供されたアカウントでログインします。
       </p>
-
-      <DocImage src="/images/docs/register.webp" alt="登録ページ：氏名、メール、パスワード欄" />
 
       <DocSteps>
         <DocStep step={1} title="組織の作成または参加">

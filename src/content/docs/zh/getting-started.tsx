@@ -56,12 +56,10 @@ export function whatIsLingwuContentZh() {
 export function accountAndDashboardContentZh() {
   return (
     <>
-      <h2>注册账号</h2>
+      <h2>登录账号</h2>
       <p>
-        访问 <DocLink href="/register">/register</DocLink>，填写姓名、邮箱和密码即可完成注册。
+        访问 <DocLink href="/login">/login</DocLink>，使用管理员提供的账号登录。
       </p>
-
-      <DocImage src="/images/docs/register.webp" alt="注册页面，包含姓名、邮箱和密码字段" />
 
       <DocSteps>
         <DocStep step={1} title="创建或加入组织">

@@ -82,19 +82,17 @@ export const gettingStartedArticles: DocArticle[] = [
     title: "Account and Dashboard",
     titleZh: "账户与工作台",
     titleJa: "アカウントとダッシュボード",
-    description: "Sign up, set up your organization, and navigate the dashboard",
-    descriptionZh: "注册账号、配置组织并熟悉工作台导航",
-    descriptionJa: "登録、組織設定、ダッシュボードのナビゲーション",
+    description: "Sign in, set up your workspace, and navigate the dashboard",
+    descriptionZh: "登录、配置工作台并熟悉导航",
+    descriptionJa: "ログイン、ワークスペース設定、ダッシュボードのナビゲーション",
     audience: "both",
     order: 2,
     content: () => (
       <>
-        <h2>Sign Up</h2>
+        <h2>Sign In</h2>
         <p>
-          Go to <DocLink href="/register">/register</DocLink> and enter your name, email, and password.
+          Go to <DocLink href="/login">/login</DocLink> and use the account provided by your administrator.
         </p>
-
-        <DocImage src="/images/docs/register.webp" alt="Registration page with name, email, and password fields" />
 
         <DocSteps>
           <DocStep step={1} title="Create or Join an Organization">

@@ -47,7 +47,7 @@ export function DocsHeader() {
             <ExternalLink className="h-3 w-3" />
           </Link>
           <Link
-            href="/register"
+            href="/login"
             className="bg-primary text-primary-foreground text-xs font-semibold px-4 py-2 rounded-lg hover:bg-primary/90 transition-all duration-200"
           >
             {ui.getStarted()}
