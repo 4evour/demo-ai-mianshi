@@ -11,6 +11,7 @@ export function normalizeMvpInterviewCapabilities(input: {
   videoEnabled?: boolean;
   antiCheatingEnabled?: boolean;
 }) {
+  void input;
   return {
     chatEnabled: MVP_CAPABILITIES.chat,
     voiceEnabled: MVP_CAPABILITIES.voice,

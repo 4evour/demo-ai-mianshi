@@ -2,19 +2,16 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AntiCheatingGuard } from "@/components/session/anti-cheating-banner";
-import { IntervieweeOnboarding, PreviewWrapper } from "@/components/session/interviewee-onboarding";
-import { IntervieweeTourOverlay } from "@/components/session/interviewee-tour-overlay";
-import { IntervieweeTourProvider } from "@/components/session/interviewee-tour-provider";
+import { IntervieweeOnboarding } from "@/components/session/interviewee-onboarding";
 import { PreparingScreen } from "@/components/session/preparing-screen";
 import { Card, CardContent } from "@/components/ui/card";
-import type { InterviewContext } from "@/hooks/use-voice";
 import { getIntervieweeUi } from "@/lib/i18n/interviewee-ui";
+import { MVP_CAPABILITIES } from "@/lib/mvp-capabilities";
 import { trpc } from "@/lib/trpc/client";
 import { CheckCircle2 } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 const STORAGE_PREFIX = "aural_session_";
 
@@ -22,11 +19,6 @@ const ChatInterface = dynamic(
   () => import("@/components/session/chat-interface").then((m) => m.ChatInterface),
   { ssr: false, loading: () => <PreparingScreen /> },
 );
-const VoiceInterface = dynamic(
-  () => import("@/components/session/voice-interface").then((m) => m.VoiceInterface),
-  { ssr: false, loading: () => <PreparingScreen /> },
-);
-
 export default function SlugSessionPage() {
   const params = useParams();
   const searchParams = useSearchParams();
@@ -38,16 +30,11 @@ export default function SlugSessionPage() {
   const [completed, setCompleted] = useState(false);
   const [completionReason, setCompletionReason] = useState<string | undefined>();
   const [onboardingDone, setOnboardingDone] = useState(isPreview);
-  const [previewTourDone, setPreviewTourDone] = useState(false);
 
   const handleComplete = (reason?: string) => {
     setCompletionReason(reason);
     setCompleted(true);
   };
-
-  const handleTourReady = useCallback(() => {
-    setPreviewTourDone(true);
-  }, []);
 
   const sessionId = useMemo(() => {
     if (sidParam) return sidParam;
@@ -92,8 +79,6 @@ export default function SlugSessionPage() {
     );
   }
 
-  const antiCheatingEnabled = !isPreview && !!interview.data.antiCheatingEnabled;
-
   if (!onboardingDone) {
     return (
       <IntervieweeOnboarding
@@ -102,9 +87,8 @@ export default function SlugSessionPage() {
         questionCount={interview.data.questions.length}
         timeLimitMinutes={interview.data.timeLimitMinutes}
         language={interview.data.language}
-        antiCheatingEnabled={antiCheatingEnabled}
-        voiceEnabled={!!interview.data.voiceEnabled}
-        chatEnabled={!!interview.data.chatEnabled}
+        voiceEnabled={MVP_CAPABILITIES.voice}
+        chatEnabled={MVP_CAPABILITIES.chat}
         aiName={interview.data.aiName}
         questionTypes={interview.data.questions.map((q: any) => q.type as string)}
         onComplete={() => setOnboardingDone(true)}
@@ -125,121 +109,8 @@ export default function SlugSessionPage() {
 
   const isResuming = resumeMessages && resumeMessages.length > 0;
 
-  const resumeTextMessages = resumeMessages
-    ?.filter((m: any) => m.contentType === "TEXT")
-    .map((m: any) => ({ id: m.id, role: m.role, content: m.content }));
-
-  const resumeDrawings = resumeMessages
-    ?.filter((m: any) => m.contentType === "WHITEBOARD" && m.whiteboardData)
-    .map((m: any) => ({
-      id: m.content,
-      label: (m.whiteboardData as Record<string, unknown>)?.label as string ?? "Drawing",
-      snapshotData: JSON.stringify(m.whiteboardData),
-    }));
-
-  const useVoice = interview.data.voiceEnabled;
-
-  const showPreviewTour = isPreview && !previewTourDone && useVoice;
-
-  if (showPreviewTour) {
-    const mode = useVoice ? "voice" : "chat";
-    const mockContext: InterviewContext = {
-      title: interview.data.title,
-      aiName: interview.data.aiName ?? "AI Interviewer",
-      aiTone: "professional",
-      language: interview.data.language ?? "en-US",
-      followUpDepth: "medium",
-      questions: interview.data.questions.map((q: any, i: number) => ({
-        text: q.text,
-        type: q.type as string,
-        order: i,
-      })),
-    };
-
-    return (
-      <IntervieweeTourProvider mode={mode} language={interview.data.language}>
-        <PreviewWrapper onReady={handleTourReady}>
-          {mode === "voice" ? (
-            <VoiceInterface
-              sessionId="__preview__"
-              interviewId="__preview__"
-              interviewTitle={interview.data.title}
-              aiName={interview.data.aiName ?? "AI Interviewer"}
-              questionCount={interview.data.questions.length}
-              interviewContext={mockContext}
-              durationMinutes={interview.data.timeLimitMinutes ?? undefined}
-              chatEnabled={!!interview.data.chatEnabled}
-              onComplete={() => {}}
-              preview
-            />
-          ) : (
-            <ChatInterface
-              sessionId="__preview__"
-              interview={{
-                id: "__preview__",
-                title: interview.data.title,
-                aiName: interview.data.aiName ?? "AI Interviewer",
-                mode: "CHAT",
-                questions: mockContext.questions.map((q, i) => ({
-                  id: `preview-q-${i}`,
-                  text: q.text,
-                  type: q.type,
-                })),
-              }}
-              durationMinutes={interview.data.timeLimitMinutes ?? undefined}
-              onComplete={() => {}}
-              preview
-            />
-          )}
-        </PreviewWrapper>
-        <IntervieweeTourOverlay />
-      </IntervieweeTourProvider>
-    );
-  }
-
-  if (useVoice) {
-    const interviewContext = {
-      title: interview.data.title,
-      objective: interview.data.objective,
-      aiName: interview.data.aiName,
-      aiTone: interview.data.aiTone,
-      language: interview.data.language,
-      followUpDepth: interview.data.followUpDepth,
-      startQuestionIndex: isResuming ? resumeQuestionIndex : undefined,
-      questions: interview.data.questions.map((q: any) => ({
-        text: q.text,
-        type: q.type,
-        description: q.description,
-        options: q.options,
-        starterCode: q.starterCode as { language: string; code: string } | null,
-        order: q.order,
-      })),
-    };
-
-    return (
-      <>
-        <AntiCheatingGuard enabled={antiCheatingEnabled} sessionId={sessionId!} />
-        <VoiceInterface
-          sessionId={sessionId!}
-          interviewId={interview.data.id}
-          interviewTitle={interview.data.title}
-          aiName={interview.data.aiName}
-          questionCount={interview.data.questions.length}
-          interviewContext={interviewContext}
-          durationMinutes={interview.data.timeLimitMinutes ?? undefined}
-          initialMessages={isResuming ? resumeTextMessages : undefined}
-          initialDrawings={isResuming && resumeDrawings?.length ? resumeDrawings : undefined}
-          chatEnabled={!!interview.data.chatEnabled}
-          onComplete={handleComplete}
-          videoMode={isPreview ? false : !!interview.data.videoEnabled}
-        />
-      </>
-    );
-  }
-
   return (
     <>
-      <AntiCheatingGuard enabled={antiCheatingEnabled} sessionId={sessionId!} />
       <ChatInterface
         sessionId={sessionId!}
         interview={{

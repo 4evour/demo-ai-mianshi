@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -29,11 +28,8 @@ import { trpc } from "@/lib/trpc/client";
 import {
   Loader2,
   MessageSquare,
-  Mic,
   PenLine,
-  ShieldCheck,
   Sparkles,
-  Video,
 } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
@@ -50,9 +46,6 @@ export default function NewInterviewPage() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [objective, setObjective] = useState("");
-  const [chatEnabled, setChatEnabled] = useState(true);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [videoEnabled, setVideoEnabled] = useState(true);
   const [aiTone, setAiTone] = useState<
     "CASUAL" | "PROFESSIONAL" | "FORMAL" | "FRIENDLY"
   >("FRIENDLY");
@@ -61,7 +54,6 @@ export default function NewInterviewPage() {
   >("MODERATE");
   const [language, setLanguage] = useState("en");
   const [duration, setDuration] = useState<number | undefined>(undefined);
-  const [antiCheatingEnabled, setAntiCheatingEnabled] = useState(false);
   const [loading, setLoading] = useState(false);
 
   const createMutation = trpc.interview.create.useMutation({
@@ -87,14 +79,11 @@ export default function NewInterviewPage() {
         title,
         description,
         objective,
-        chatEnabled,
-        voiceEnabled,
-        videoEnabled,
+        chatEnabled: true,
         aiTone,
         followUpDepth,
         language,
         timeLimitMinutes: duration,
-        antiCheatingEnabled,
       });
     } finally {
       setLoading(false);
@@ -205,133 +194,15 @@ export default function NewInterviewPage() {
                 </div>
 
                 <div className="space-y-2">
-                  <Label>{isZh ? "沟通渠道" : "Communication Channels"}</Label>
-                  <p className="text-xs text-muted-foreground">
-                    {isZh
-                      ? "选择候选人在面试中的参与方式。至少启用一个渠道。"
-                      : "Choose how participants interact during the interview. At least one channel must be enabled."}
-                  </p>
-                  <div className="space-y-2 rounded-lg border p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <Label>{isZh ? "聊天" : "Chat"}</Label>
-                          <p className="text-xs text-muted-foreground">
-                            {isZh ? "文字消息" : "Text messaging"}
-                          </p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={chatEnabled}
-                        onCheckedChange={(v) => {
-                          if (!v && !voiceEnabled) return;
-                          setChatEnabled(v);
-                        }}
-                      />
+                  <Label>{isZh ? "沟通渠道" : "Communication Channel"}</Label>
+                  <div className="flex items-center gap-2 rounded-lg border p-3">
+                    <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                    <div>
+                      <Label>{isZh ? "文字问答" : "Text interview"}</Label>
+                      <p className="text-xs text-muted-foreground">
+                        {isZh ? "MVP 仅支持文字问答" : "The MVP supports text interviews only"}
+                      </p>
                     </div>
-                    <div className="border-t" />
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Mic className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <Label>{isZh ? "语音" : "Voice"}</Label>
-                          <p className="text-xs text-muted-foreground">
-                            {isZh
-                              ? "语音对话（Chrome 或 Edge）"
-                              : "Speech conversation (Chrome or Edge)"}
-                          </p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={voiceEnabled}
-                        onCheckedChange={(v) => {
-                          if (!v && !chatEnabled) return;
-                          setVoiceEnabled(v);
-                          if (!v) setVideoEnabled(false);
-                        }}
-                      />
-                    </div>
-                    <div className="border-t" />
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <Video className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <Label>{isZh ? "视频" : "Video"}</Label>
-                          <p className="text-xs text-muted-foreground">
-                            {isZh
-                              ? "摄像头与屏幕录制"
-                              : "Camera & screen recording"}
-                          </p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={videoEnabled}
-                        disabled={!voiceEnabled}
-                        onCheckedChange={setVideoEnabled}
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>{isZh ? "防作弊模式" : "Anti-Cheating Mode"}</Label>
-                  <div className="rounded-lg border p-3">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center gap-2">
-                        <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-                        <div>
-                          <Label>
-                            {isZh ? "启用防作弊" : "Enable Anti-Cheating"}
-                          </Label>
-                          <p className="text-xs text-muted-foreground">
-                            {isZh
-                              ? "需要摄像头、麦克风和屏幕共享。可监控切换标签页、阻止外部粘贴，并检测多屏。"
-                              : "Requires camera, mic & screen sharing. Monitors tab switches, blocks external paste, and detects multiple screens"}
-                          </p>
-                        </div>
-                      </div>
-                      <Switch
-                        checked={antiCheatingEnabled}
-                        onCheckedChange={setAntiCheatingEnabled}
-                      />
-                    </div>
-                    {antiCheatingEnabled && (
-                      <div className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
-                        <p className="font-medium">
-                          {isZh
-                            ? "启用后，候选人将遇到以下限制："
-                            : "When enabled, interviewees will experience:"}
-                        </p>
-                        <ul className="mt-1 list-inside list-disc space-y-0.5">
-                          <li>
-                            {isZh
-                              ? "必须开启摄像头、麦克风和屏幕共享（不可跳过）"
-                              : "Camera, microphone, and screen sharing will be mandatory (cannot be skipped)"}
-                          </li>
-                          <li>
-                            {isZh
-                              ? "切换标签页和窗口失焦会被记录并标记"
-                              : "Tab switching and window focus loss will be tracked and flagged"}
-                          </li>
-                          <li>
-                            {isZh
-                              ? "将阻止从面试页面外部粘贴内容"
-                              : "Pasting content from outside the interview page will be blocked"}
-                          </li>
-                          <li>
-                            {isZh
-                              ? "会检测并警告多显示器环境"
-                              : "Multiple monitor setups will be detected and warned against"}
-                          </li>
-                        </ul>
-                        <p className="mt-1.5 text-amber-700 dark:text-amber-300">
-                          {isZh
-                            ? "候选人在开始前会被明确告知这些限制。"
-                            : "Candidates will be informed of these restrictions before starting."}
-                        </p>
-                      </div>
-                    )}
                   </div>
                 </div>
 

@@ -2,11 +2,11 @@
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-import { AntiCheatingGuard } from "@/components/session/anti-cheating-banner";
 import { IntervieweeOnboarding } from "@/components/session/interviewee-onboarding";
 import { PreparingScreen } from "@/components/session/preparing-screen";
 import { Card, CardContent } from "@/components/ui/card";
 import { getIntervieweeUi } from "@/lib/i18n/interviewee-ui";
+import { MVP_CAPABILITIES } from "@/lib/mvp-capabilities";
 import { trpc } from "@/lib/trpc/client";
 import { CheckCircle2 } from "lucide-react";
 import dynamic from "next/dynamic";
@@ -17,11 +17,6 @@ const ChatInterface = dynamic(
   () => import("@/components/session/chat-interface").then((m) => m.ChatInterface),
   { ssr: false, loading: () => <PreparingScreen /> },
 );
-const VoiceInterface = dynamic(
-  () => import("@/components/session/voice-interface").then((m) => m.VoiceInterface),
-  { ssr: false, loading: () => <PreparingScreen /> },
-);
-
 export default function InviteSessionPage() {
   const params = useParams();
   const token = params.token as string;
@@ -92,9 +87,9 @@ export default function InviteSessionPage() {
         questionCount={interview.questions?.length ?? 0}
         timeLimitMinutes={interview.timeLimitMinutes}
         language={interview.language}
-        antiCheatingEnabled={!!interview.antiCheatingEnabled}
-        voiceEnabled={!!interview.voiceEnabled}
-        chatEnabled={!!interview.chatEnabled}
+        antiCheatingEnabled={MVP_CAPABILITIES.antiCheating}
+        voiceEnabled={MVP_CAPABILITIES.voice}
+        chatEnabled={MVP_CAPABILITIES.chat}
         aiName={interview.aiName}
         questionTypes={(interview.questions ?? []).map((q: any) => q.type as string)}
         onComplete={() => setOnboardingDone(true)}
@@ -102,48 +97,8 @@ export default function InviteSessionPage() {
     );
   }
 
-  const useVoice = interview.voiceEnabled;
-
-  if (useVoice) {
-    const interviewContext = {
-      title: interview.title,
-      objective: interview.objective,
-      aiName: interview.aiName,
-      aiTone: interview.aiTone,
-      language: interview.language,
-      followUpDepth: interview.followUpDepth,
-      questions: interview.questions.map((q: any) => ({
-        text: q.text,
-        type: q.type,
-        description: q.description,
-        options: q.options,
-        starterCode: q.starterCode as { language: string; code: string } | null,
-        order: q.order,
-      })),
-    };
-
-    return (
-      <>
-        <AntiCheatingGuard enabled={!!interview.antiCheatingEnabled} sessionId={session.id} />
-        <VoiceInterface
-          sessionId={session.id}
-          interviewId={interview.id}
-          interviewTitle={interview.title}
-          aiName={interview.aiName}
-          questionCount={interview.questions.length}
-          interviewContext={interviewContext}
-          durationMinutes={interview.timeLimitMinutes ?? undefined}
-          chatEnabled={!!interview.chatEnabled}
-          onComplete={handleComplete}
-          videoMode={!!interview.videoEnabled}
-        />
-      </>
-    );
-  }
-
   return (
     <>
-      <AntiCheatingGuard enabled={!!interview.antiCheatingEnabled} sessionId={session.id} />
       <ChatInterface
         sessionId={session.id}
         interview={{

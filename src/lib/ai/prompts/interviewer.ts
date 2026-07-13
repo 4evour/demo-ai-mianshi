@@ -1,4 +1,5 @@
 import type { Tables } from "@/lib/supabase/types";
+import { MVP_CAPABILITIES } from "@/lib/mvp-capabilities";
 import type { LLMMessage } from "../types";
 
 interface InterviewContext {
@@ -23,11 +24,7 @@ export function buildInterviewerPrompt(ctx: InterviewContext): LLMMessage[] {
     })
     .join("\n");
 
-  const channels = [
-    interview.chatEnabled && "Chat",
-    interview.voiceEnabled && "Voice",
-    interview.videoEnabled && "Video",
-  ].filter(Boolean).join(", ");
+  const channels = MVP_CAPABILITIES.chat ? "Chat" : "";
 
   const systemPrompt = `You are ${interview.aiName}, an expert interviewer conducting a structured conversation.
 

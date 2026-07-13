@@ -13,7 +13,6 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { AI_TONES, FOLLOW_UP_DEPTHS, LANGUAGES } from "@/lib/constants";
@@ -25,9 +24,6 @@ import {
     Loader2,
     Lock,
     MessageSquare,
-    Mic,
-    ShieldCheck,
-    Video,
     X
 } from "lucide-react";
 import { useCallback, useState } from "react";
@@ -68,9 +64,6 @@ export default function SettingsTab() {
   const [title, setTitle] = useState<string>(interview.title);
   const [description, setDescription] = useState<string>(interview.description ?? "");
   const [objective, setObjective] = useState<string>(interview.objective ?? "");
-  const [chatEnabled, setChatEnabled] = useState<boolean>(interview.chatEnabled ?? true);
-  const [voiceEnabled, setVoiceEnabled] = useState<boolean>(interview.voiceEnabled ?? false);
-  const [videoEnabled, setVideoEnabled] = useState<boolean>(interview.videoEnabled ?? false);
   const [aiName, setAiName] = useState<string>(interview.aiName);
   const [aiTone, setAiTone] = useState<string>(interview.aiTone);
   const [followUpDepth, setFollowUpDepth] = useState<string>(interview.followUpDepth);
@@ -79,9 +72,6 @@ export default function SettingsTab() {
   );
   const [timeLimitMinutes, setTimeLimitMinutes] = useState<string | number>(
     interview.timeLimitMinutes ?? "",
-  );
-  const [antiCheatingEnabled, setAntiCheatingEnabled] = useState<boolean>(
-    interview.antiCheatingEnabled ?? false,
   );
 
   const requireInvite = interview.requireInvite ?? true;
@@ -247,59 +237,14 @@ export default function SettingsTab() {
             />
           </div>
           <div className="space-y-2">
-            <Label>Communication Channels</Label>
-            <p className="text-xs text-muted-foreground">
-              Choose how participants interact during the interview
-            </p>
-            <div className="space-y-2 rounded-lg border p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MessageSquare className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>Chat</Label>
-                    <p className="text-xs text-muted-foreground">Text messaging</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={chatEnabled}
-                  onCheckedChange={(v) => {
-                    if (!v && !voiceEnabled) return;
-                    setChatEnabled(v);
-                  }}
-                />
-              </div>
-              <div className="border-t" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>Voice</Label>
-                    <p className="text-xs text-muted-foreground">Speech conversation</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={voiceEnabled}
-                  onCheckedChange={(v) => {
-                    if (!v && !chatEnabled) return;
-                    setVoiceEnabled(v);
-                    if (!v) setVideoEnabled(false);
-                  }}
-                />
-              </div>
-              <div className="border-t" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Video className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>Video</Label>
-                    <p className="text-xs text-muted-foreground">Camera &amp; screen recording</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={videoEnabled}
-                  disabled={!voiceEnabled}
-                  onCheckedChange={setVideoEnabled}
-                />
+            <Label>Communication Channel</Label>
+            <div className="flex items-center gap-2 rounded-lg border p-3">
+              <MessageSquare className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <Label>Text interview</Label>
+                <p className="text-xs text-muted-foreground">
+                  The MVP supports text interviews only
+                </p>
               </div>
             </div>
           </div>
@@ -363,45 +308,6 @@ export default function SettingsTab() {
         </CardContent>
       </Card>
 
-      <Card className="md:col-span-2">
-        <CardHeader>
-          <CardTitle>Anti-Cheating Mode</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="rounded-lg border p-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-                <div>
-                  <Label>Enable Anti-Cheating</Label>
-                  <p className="text-xs text-muted-foreground">
-                    Requires camera, mic & screen sharing. Monitors tab switches, blocks external paste, and detects multiple screens
-                  </p>
-                </div>
-              </div>
-              <Switch
-                checked={antiCheatingEnabled}
-                onCheckedChange={setAntiCheatingEnabled}
-              />
-            </div>
-            {antiCheatingEnabled && (
-              <div className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
-                <p className="font-medium">When enabled, interviewees will experience:</p>
-                <ul className="mt-1 list-inside list-disc space-y-0.5">
-                  <li>Camera, microphone, and screen sharing will be mandatory (cannot be skipped)</li>
-                  <li>Tab switching and window focus loss will be tracked and flagged</li>
-                  <li>Pasting content from outside the interview page will be blocked</li>
-                  <li>Multiple monitor setups will be detected and warned against</li>
-                </ul>
-                <p className="mt-1.5 text-amber-700 dark:text-amber-300">
-                  Candidates will be informed of these restrictions before starting.
-                </p>
-              </div>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
       <div className="flex items-end">
         <Button
           onClick={() =>
@@ -410,9 +316,7 @@ export default function SettingsTab() {
               title,
               description,
               objective,
-              chatEnabled,
-              voiceEnabled,
-              videoEnabled,
+              chatEnabled: true,
               aiName,
               aiTone,
               followUpDepth,
@@ -420,7 +324,6 @@ export default function SettingsTab() {
               timeLimitMinutes: timeLimitMinutes
                 ? Number(timeLimitMinutes)
                 : null,
-              antiCheatingEnabled,
             })
           }
           disabled={updateMutation.isLoading}

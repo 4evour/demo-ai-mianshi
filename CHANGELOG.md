@@ -17,6 +17,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Added a single MVP capability policy that forces chat-only interviews and disables voice, video, and anti-cheating fields at the server boundary.
 - Added regression coverage for MVP capability normalization.
+- Removed non-MVP voice, video, and anti-cheating controls from interview creation and settings screens.
+- Forced legacy sessions and interviewer prompts to use chat mode.
 
 ## [0.2.0] - 2026-05-24
 

@@ -42,12 +42,12 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useLocalizedConstants } from "@/hooks/use-localized-constants";
 import { useToast } from "@/hooks/use-toast";
 import type { AssessmentCriterion, GeneratedInterview, GeneratedQuestion } from "@/lib/ai/types";
 import { trpc } from "@/lib/trpc/client";
+import { MVP_CAPABILITIES } from "@/lib/mvp-capabilities";
 import { cn } from "@/lib/utils";
 import {
     DropdownMenu,
@@ -72,17 +72,14 @@ import {
     ListOrdered,
     Loader2,
     MessageSquareText,
-    Mic,
     Pencil,
     Plus,
     RefreshCw,
     Search,
-    ShieldCheck,
     Sparkles,
     Target,
     Trash2,
     Users,
-    Video,
     X,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -264,13 +261,13 @@ export function AIGenerator({ projectId }: { projectId?: string } = {}) {
   const [hlRanges, setHlRanges] = useState<HLRange[]>([]);
   const prevDescRef = useRef("");
   const [duration, setDuration] = useState("20");
-  const [chatEnabled, setChatEnabled] = useState(true);
-  const [voiceEnabled, setVoiceEnabled] = useState(true);
-  const [videoEnabled, setVideoEnabled] = useState(true);
+  const chatEnabled = true;
+  const [voiceEnabled] = useState(MVP_CAPABILITIES.voice);
+  const [videoEnabled] = useState(MVP_CAPABILITIES.video);
   const [aiTone, setAiTone] = useState<"CASUAL" | "PROFESSIONAL" | "FORMAL" | "FRIENDLY">("FRIENDLY");
   const [followUpDepth, setFollowUpDepth] = useState<"LIGHT" | "MODERATE" | "DEEP">("MODERATE");
   const [language, setLanguage] = useState("en");
-  const [antiCheatingEnabled, setAntiCheatingEnabled] = useState(false);
+  const [antiCheatingEnabled] = useState(MVP_CAPABILITIES.antiCheating);
   const [generating, setGenerating] = useState(false);
   const [streamPhase, setStreamPhase] = useState<"idle" | "thinking" | "writing">("idle");
   const [thinkingText, setThinkingText] = useState("");
@@ -970,88 +967,14 @@ export function AIGenerator({ projectId }: { projectId?: string } = {}) {
           </div>
           <div className="space-y-2">
             <Label>{t("aiGen.channels")}</Label>
-            <div className="space-y-2 rounded-lg border p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <MessageSquareText className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>{t("aiGen.chat")}</Label>
-                    <p className="text-xs text-muted-foreground">{t("aiGen.chatDesc")}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={chatEnabled}
-                  onCheckedChange={(v) => {
-                    if (!v && !voiceEnabled) return;
-                    setChatEnabled(v);
-                  }}
-                />
+            <div className="flex items-center gap-2 rounded-lg border p-3">
+              <MessageSquareText className="h-4 w-4 text-muted-foreground" />
+              <div>
+                <Label>{t("aiGen.chat")}</Label>
+                <p className="text-xs text-muted-foreground">
+                  {t("aiGen.chatDesc")} · MVP text only
+                </p>
               </div>
-              <div className="border-t" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Mic className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>{t("aiGen.voice")}</Label>
-                    <p className="text-xs text-muted-foreground">{t("aiGen.voiceDesc")}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={voiceEnabled}
-                  onCheckedChange={(v) => {
-                    if (!v && !chatEnabled) return;
-                    setVoiceEnabled(v);
-                    if (!v) setVideoEnabled(false);
-                  }}
-                />
-              </div>
-              <div className="border-t" />
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <Video className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>{t("aiGen.video")}</Label>
-                    <p className="text-xs text-muted-foreground">{t("aiGen.videoDesc")}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={videoEnabled}
-                  disabled={!voiceEnabled}
-                  onCheckedChange={setVideoEnabled}
-                />
-              </div>
-            </div>
-          </div>
-          <div className="space-y-2">
-            <Label>{t("aiGen.antiCheat")}</Label>
-            <div className="rounded-lg border p-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <ShieldCheck className="h-4 w-4 text-muted-foreground" />
-                  <div>
-                    <Label>{t("aiGen.antiCheatEnable")}</Label>
-                    <p className="text-xs text-muted-foreground">{t("aiGen.antiCheatDesc")}</p>
-                  </div>
-                </div>
-                <Switch
-                  checked={antiCheatingEnabled}
-                  onCheckedChange={setAntiCheatingEnabled}
-                />
-              </div>
-              {antiCheatingEnabled && (
-                <div className="mt-3 rounded-md bg-amber-50 px-3 py-2 text-xs text-amber-800 dark:bg-amber-950/30 dark:text-amber-200">
-                  <p className="font-medium">When enabled, interviewees will experience:</p>
-                  <ul className="mt-1 list-inside list-disc space-y-0.5">
-                    <li>Camera, microphone, and screen sharing will be mandatory (cannot be skipped)</li>
-                    <li>Tab switching and window focus loss will be tracked and flagged</li>
-                    <li>Pasting content from outside the interview page will be blocked</li>
-                    <li>Multiple monitor setups will be detected and warned against</li>
-                  </ul>
-                  <p className="mt-1.5 text-amber-700 dark:text-amber-300">
-                    Candidates will be informed of these restrictions before starting.
-                  </p>
-                </div>
-              )}
             </div>
           </div>
           <AiButton
@@ -1137,8 +1060,6 @@ export function AIGenerator({ projectId }: { projectId?: string } = {}) {
             <CardDescription>{result.objective}</CardDescription>
             <div className="flex gap-2 pt-2">
               {chatEnabled && <Badge>Chat</Badge>}
-              {voiceEnabled && <Badge>Voice</Badge>}
-              {videoEnabled && <Badge>Video</Badge>}
               <Badge variant="outline">{aiTone}</Badge>
               <Badge variant="secondary">
                 ~{result.estimatedDurationMinutes} min

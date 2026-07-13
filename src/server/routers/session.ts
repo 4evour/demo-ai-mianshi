@@ -56,7 +56,7 @@ export const sessionRouter = router({
 
       const questions = (interview.questions ?? []) as { id: string }[];
 
-      const derivedMode = interview.voiceEnabled ? "VOICE" : "CHAT";
+      const derivedMode = "CHAT";
 
       const { data: sessionJson, error } = await ctx.supabase.rpc(
         "create_interview_session",
@@ -140,7 +140,7 @@ export const sessionRouter = router({
         .single();
 
       const questions = (interview.questions ?? []) as { id: string }[];
-      const derivedMode = interview.voiceEnabled ? "VOICE" : "CHAT";
+      const derivedMode = "CHAT";
 
       const { data: sessionJson, error } = await ctx.supabase.rpc(
         "create_interview_session",
@@ -200,7 +200,7 @@ export const sessionRouter = router({
       questions.sort((a, b) => a.order - b.order);
 
       // Create session via RPC (also links it to the candidate)
-      const derivedMode = interview.voiceEnabled ? "VOICE" : "CHAT";
+      const derivedMode = "CHAT";
 
       const { data: sessionJson, error } = await ctx.supabase.rpc(
         "create_invite_session",
